@@ -7,6 +7,7 @@
 
 .container>.controls {
     margin: 10px 0;
+    display: inline;
 }
 
 .gameboard {
@@ -15,15 +16,24 @@
     border: 2px solid black;
 }
 
+.cell {
+    height:16px;
+    width: 16px;
+}
+
 tr,
 td {
     border: 1px solid black;
 }
 
-.cell {
-    cursor: pointer;
-}
-
 .active {
     background-color: black;
+}
+
+#form {
+  display: inline;  
+}
+
+#dropDown2 {
+    display: inline;
 }

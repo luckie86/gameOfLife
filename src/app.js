@@ -12,26 +12,43 @@
      *
      */
 
-    var cells = document.querySelectorAll(".cell");  // array of all the cell DOM items, used for UI manipulation. TODO: Implement (hint: research how to select elements with javascript)
+    var cells;   // array of all the cell DOM items, used for UI manipulation. TODO: Implement (hint: research how to select elements with javascript)
 
     var intervalTimer = 500; // how often does a game tick happen. TODO: make this customisable from the UI (dropdown, slider, etc.) e.g. SLOW, NORMAL, FAST
     
-    var boardHeight = 50; // number of cells verticaly
-    var boardWidth = 50; // number of cells horizontaly 
+    var boardHeight; // number of cells verticaly
+    var boardWidth; // number of cells horizontaly 
     var gameBoard = []; // 2d array that represents the game board, used for logic. TODO: Implement
     var interval;
     /*
      * This is the game init function. It adds an integer value to the id attribute of all the given elements.
      * TODO: It should add click handling for every given cell
      */
+
+    function generateTable () {
+        let divToAppend = document.getElementById("table");
+        let table = document.createElement("table");
+
+        for (let i = 0; i < boardHeight; i++) {
+            let row = document.createElement("tr");
+
+            for (let j = 0; j < boardWidth; j++) {
+                var cell = document.createElement("td");
+                cell.className = "cell";
+                row.appendChild(cell);
+            }
+            table.appendChild(row);
+        }
+        divToAppend.appendChild(table);
+        table.classList.add("gameboard");
+    }
+
     function setupGameBoard(cells) {
         var counter = 0;
         cells.forEach(function(cell) {
             cell.id = counter++;
             
-            cell.addEventListener("click", function (event){
-                onCellClick(event);
-            })
+            cell.addEventListener("click", onCellClick)
         });
     }
 
@@ -58,15 +75,14 @@
     function onCellClick(event) {
         // If empty cell is clicked it gets the 'active' class, if a full cell is clicked the 'active' class is removed
         // ...
-        let target = event.target;
-        let cellNumber = target.id;
+        let cellNumber = this.id;
         let x = cellNumber % boardWidth;
         let y = Math.floor(cellNumber / boardWidth);
-        if (!target.classList.contains("active")) {
-            target.classList.add("active");
+        if (!this.classList.contains("active")) {
+            this.classList.add("active");
             gameBoard[y][x] = 1;
         } else {
-            target.classList.remove("active");
+            this.classList.remove("active");
             gameBoard[y][x] = 0;
         }
     }
@@ -74,7 +90,7 @@
     function startGame() {
         // start the game
         // set an interval that runs every 'intervalTimer' milliseconds.
-        interval = setInterval(function(){
+        interval = setInterval(function(){            
             tick();
         }, intervalTimer);
     }
@@ -127,7 +143,21 @@
                   }
               }
           }
+    }
 
+    let button = document.getElementById("resizeGameboard");
+    button.addEventListener("click", gameBoardCreation);
+
+    function gameBoardCreation(callback) {
+    // ...
+        boardHeight = parseInt(document.getElementById("boardHeight").value);
+        boardWidth = parseInt(document.getElementById("boardWidth").value);   
+        handleIntervalTimer();
+        generateTable(callback);
+        event.preventDefault();
+        cells = document.querySelectorAll(".cell");
+        setupGameBoard(cells);
+        setUpGrid();
     }
 
     function onGameStart() {
@@ -146,7 +176,6 @@
             clearInterval(interval);
             //button.disabled = true;
         });
-        
     }
 
     function onGameReset() {
@@ -160,7 +189,7 @@
 
     function handleIntervalTimer () {
         let dropdown = document.getElementById("Dropdown");
-        dropdown.addEventListener("change", function(){
+        dropdown.addEventListener("change", function(event){
             if (dropdown.options[dropdown.selectedIndex].text === "Slow") {
                 intervalTimer = 1000;
             } else if (dropdown.options[dropdown.selectedIndex].text === "Normal") {
@@ -172,12 +201,6 @@
     }
     
     /////////////////////////////////////
-
-    setupGameBoard(cells);
-    
-    setUpGrid();
-
-    handleIntervalTimer();
 
     onGameStart();
 

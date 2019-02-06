@@ -208,13 +208,13 @@
 
     function handleSpaceShips () {
         let dropdown = document.getElementById("dropDown2");
-        dropdown.addEventListener("change", function(event){
+        dropdown.addEventListener("change", function(){
             if (dropdown.options[dropdown.selectedIndex].text === "LWSS") {
                 createLWSS();
             } else if (dropdown.options[dropdown.selectedIndex].text === "MWSS") {
-                
+                createMWSS();
             } else if (dropdown.options[dropdown.selectedIndex].text === "HWSS") {
-                
+                createHWSS();
             }
         }, false);
     }
@@ -222,13 +222,33 @@
      
     function createLWSS() {
         for (let i = 0; i < LWSS.length; i++) {
-            for (let j = 0; j < LWSS[i].length; j++) {
-                
-            }
+            let x = LWSS[i][1];
+            let y = LWSS[i][0];
+            let cell = document.getElementById(x+y*boardWidth);
+            cell.classList.add("active");
+            gameBoard[x][y] = 1;
         }
     }
     
+    function createMWSS() {
+        for (let i = 0; i < MWSS.length; i++) {
+            let x = MWSS[i][1];
+            let y = MWSS[i][0];
+            let cell = document.getElementById(x+y*boardWidth);
+            cell.classList.add("active");
+            gameBoard[x][y] = 1;
+        }
+    }
 
+    function createHWSS() {
+        for (let i = 0; i < HWSS.length; i++) {
+            let x = HWSS[i][1];
+            let y = HWSS[i][0];
+            let cell = document.getElementById(x+y*boardWidth);
+            cell.classList.add("active");
+            gameBoard[x][y] = 1;
+        }
+    }
 
     /////////////////////////////////////
 

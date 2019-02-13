@@ -20,6 +20,12 @@
     var boardWidth; // number of cells horizontaly 
     var gameBoard = []; // 2d array that represents the game board, used for logic. TODO: Implement
     var interval;
+    
+    var LWSS = [[0,1,1], [1,2,1], [2,0,1], [2,1,1], [2,2,1]]
+    var MWSS = [[0,3,1], [1,1,1], [1,5,1], [2,0,1], [3,0,1], [3,5,1], [4,0,1], [4,1,1], [4,2,1], [4,3,1], [4,4,1]]
+    var HWSS = [[0,3,1], [0,4,1], [1,1,1], [1,6,1], [2,0,1], [3,0,1], [3,6,1], [4,0,1], [4,1,1], [4,2,1], [4,3,1], [4,4,1], [4,5,1],]
+
+
     /*
      * This is the game init function. It adds an integer value to the id attribute of all the given elements.
      * TODO: It should add click handling for every given cell
@@ -199,7 +205,51 @@
             }
         }, false);
     }
+
+    function handleSpaceShips () {
+        let dropdown = document.getElementById("dropDown2");
+        dropdown.addEventListener("change", function(){
+            if (dropdown.options[dropdown.selectedIndex].text === "LWSS") {
+                createLWSS();
+            } else if (dropdown.options[dropdown.selectedIndex].text === "MWSS") {
+                createMWSS();
+            } else if (dropdown.options[dropdown.selectedIndex].text === "HWSS") {
+                createHWSS();
+            }
+        }, false);
+    }
     
+     
+    function createLWSS() {
+        for (let i = 0; i < LWSS.length; i++) {
+            let x = LWSS[i][1];
+            let y = LWSS[i][0];
+            let cell = document.getElementById(x+y*boardWidth);
+            cell.classList.add("active");
+            gameBoard[x][y] = 1;
+        }
+    }
+    
+    function createMWSS() {
+        for (let i = 0; i < MWSS.length; i++) {
+            let x = MWSS[i][1];
+            let y = MWSS[i][0];
+            let cell = document.getElementById(x+y*boardWidth);
+            cell.classList.add("active");
+            gameBoard[x][y] = 1;
+        }
+    }
+
+    function createHWSS() {
+        for (let i = 0; i < HWSS.length; i++) {
+            let x = HWSS[i][1];
+            let y = HWSS[i][0];
+            let cell = document.getElementById(x+y*boardWidth);
+            cell.classList.add("active");
+            gameBoard[x][y] = 1;
+        }
+    }
+
     /////////////////////////////////////
 
     onGameStart();
@@ -207,6 +257,8 @@
     onGameReset();
 
     onGameStop();
+
+    handleSpaceShips();
 
 })();
 

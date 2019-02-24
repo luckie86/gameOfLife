@@ -23,10 +23,6 @@
     var x;
     var y;
     
-    var LWSS = [[0,1,1], [1,2,1], [2,0,1], [2,1,1], [2,2,1]]
-    var MWSS = [[0,3,1], [1,1,1], [1,5,1], [2,0,1], [3,0,1], [3,5,1], [4,0,1], [4,1,1], [4,2,1], [4,3,1], [4,4,1]]
-    var HWSS = [[0,3,1], [0,4,1], [1,1,1], [1,6,1], [2,0,1], [3,0,1], [3,6,1], [4,0,1], [4,1,1], [4,2,1], [4,3,1], [4,4,1], [4,5,1],]
-
     var GLIDER = {
         width: 3,
         height: 3,
@@ -34,6 +30,41 @@
             [0, 1, 0],
             [0, 0, 1],
             [1, 1, 1]
+        ]
+    };
+
+    var LWSS = {
+        width: 5,
+        height: 4,
+        design: [
+            [0, 1, 0, 0, 1],
+            [1, 0, 0, 0, 0],
+            [1, 0, 0, 0, 1],
+            [1, 1, 1, 1, 0]
+        ]
+    };
+
+    var MWSS = {
+        width: 6,
+        height: 5,
+        design: [
+            [0, 0, 0, 1, 0, 0],
+            [0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0],
+            [1, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 0]
+        ]
+    };
+
+    var HWSS = {
+        width: 7,
+        height: 5,
+        design: [
+            [0, 0, 0, 1, 1, 0, 0],
+            [0, 1, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0],
+            [1, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 1, 0]
         ]
     };
 
@@ -101,19 +132,19 @@
         } else {
             this.classList.remove("active");
             gameBoard[y][x] = 0;
-        }
-
-        if (gameBoard[x][y] == 1 ) {
+        } if (gameBoard[y][x] == 1) {
             let cell = document.getElementById((x)+(y)*boardWidth);
-            console.log("je šlo v if");
             cell.classList.remove("active")
-            gameBoard[x][y] = 0;
+            gameBoard[y][x] = 0;
         }
-
-        console.log("pred handle");
+        
         handleSpaceShips();
 
+        
     }
+
+
+    
 
 
     function startGame() {
@@ -234,26 +265,23 @@
 
     function handleSpaceShips () {
         let dropdown = document.getElementById("dropDown2");
-        //dropdown.addEventListener("change", function(){
-            if (dropdown.options[dropdown.selectedIndex].text === "LWSS") {
-                createGlider(x,y,true);
-                console.log("je šlo");
+            if (dropdown.options[dropdown.selectedIndex].text === "Glider") {
+                createForm(x, y, GLIDER, true);
+            } else if (dropdown.options[dropdown.selectedIndex].text === "LWSS") {
+                createForm(x, y, LWSS, true);
             } else if (dropdown.options[dropdown.selectedIndex].text === "MWSS") {
-                createMWSS();
+                createForm(x, y, MWSS, true);
             } else if (dropdown.options[dropdown.selectedIndex].text === "HWSS") {
-                createHWSS();
+                createForm(x, y, HWSS, true);
             }
-        //}, false);
     }
    
-    function createGlider(x,y, condition) {
+    function createForm(x, y, shape, condition) {
         if(condition) {
-            console.log(gameBoard[x][y]);
-        for (let i = 0; i < GLIDER.width; i++) {
-            for (let j = 0; j < GLIDER.height; j++) {
+        for (let i = 0; i < shape.height; i++) {
+            for (let j = 0; j < shape.width; j++) {
                 let cell = document.getElementById((j+x)+(i+y)*boardWidth);
-                
-                    if (GLIDER.design[i][j] == 1) {
+                    if (shape.design[i][j] == 1) {
                         if (!cell.classList.contains("active")) {
                             cell.classList.add("active");
                             gameBoard[i+y][j+x]=1;
@@ -262,36 +290,6 @@
                 }
             } 
         }   
-    }
-
-    function createLWSS() {
-        for (let i = 0; i < LWSS.length; i++) {
-            let x = LWSS[i][1];
-            let y = LWSS[i][0];
-            let cell = document.getElementById(x+y*boardWidth);
-            cell.classList.add("active");
-            gameBoard[x][y] = 1;
-        }
-    }
-    
-    function createMWSS() {
-        for (let i = 0; i < MWSS.length; i++) {
-            let x = MWSS[i][1];
-            let y = MWSS[i][0];
-            let cell = document.getElementById(x+y*boardWidth);
-            cell.classList.add("active");
-            gameBoard[x][y] = 1;
-        }
-    }
-
-    function createHWSS() {
-        for (let i = 0; i < HWSS.length; i++) {
-            let x = HWSS[i][1];
-            let y = HWSS[i][0];
-            let cell = document.getElementById(x+y*boardWidth);
-            cell.classList.add("active");
-            gameBoard[x][y] = 1;
-        }
     }
 
     function defaultGameBoardCreation(boardHeight,boardWidth) {
@@ -306,7 +304,6 @@
     function setGameIndicator(status) {
         if (status) {
             let ledlight = document.getElementById("led");
-            console.log(ledlight);
             ledlight.classList.remove("led-red");
             ledlight.classList.add("led-green");
         } else {

@@ -39,7 +39,7 @@ td {
 }
 
 .led-box {
-    display: inline;
+    display: inline-block;
   }
 
 .led-green {

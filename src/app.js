@@ -132,20 +132,11 @@
         } else {
             this.classList.remove("active");
             gameBoard[y][x] = 0;
-        } if (gameBoard[y][x] == 1) {
-            let cell = document.getElementById((x)+(y)*boardWidth);
-            cell.classList.remove("active")
-            gameBoard[y][x] = 0;
-        }
+        } 
         
         handleSpaceShips();
-
         
     }
-
-
-    
-
 
     function startGame() {
         // start the game
@@ -267,12 +258,16 @@
         let dropdown = document.getElementById("dropDown2");
             if (dropdown.options[dropdown.selectedIndex].text === "Glider") {
                 createForm(x, y, GLIDER, true);
+                removeClickedCell();
             } else if (dropdown.options[dropdown.selectedIndex].text === "LWSS") {
                 createForm(x, y, LWSS, true);
+                removeClickedCell();
             } else if (dropdown.options[dropdown.selectedIndex].text === "MWSS") {
                 createForm(x, y, MWSS, true);
+                removeClickedCell();
             } else if (dropdown.options[dropdown.selectedIndex].text === "HWSS") {
                 createForm(x, y, HWSS, true);
+                removeClickedCell();
             }
     }
    
@@ -312,6 +307,16 @@
             ledlight.classList.add("led-red");
         }
     } 
+
+    function removeClickedCell() {
+        if (gameBoard[y][x] == 1) {
+            let cell = document.getElementById((x)+(y)*boardWidth);
+            cell.classList.remove("active")
+            gameBoard[y][x] = 0;
+        }
+    }
+    
+    
 
     /////////////////////////////////////
 

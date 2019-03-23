@@ -37,3 +37,25 @@ td {
 #dropDown2 {
     display: inline;
 }
+
+.led-box {
+    display: inline-block;
+  }
+
+.led-green {
+    width: 24px;
+    height: 24px;
+    background-color: green ;
+    /* background-color: #ABFF00; */
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, green 0 2px 12px
+  }
+
+  .led-red {
+    width: 24px;
+    height: 24px;
+    background-color: red;
+    /* background-color: #ABFF00; */
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, red 0 2px 12px
+  }

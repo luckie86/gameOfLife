@@ -16,15 +16,57 @@
 
     var intervalTimer = 500; // how often does a game tick happen. TODO: make this customisable from the UI (dropdown, slider, etc.) e.g. SLOW, NORMAL, FAST
     
-    var boardHeight; // number of cells verticaly
-    var boardWidth; // number of cells horizontaly 
+    var boardHeight = 50; // number of cells verticaly
+    var boardWidth = 50; // number of cells horizontaly 
     var gameBoard = []; // 2d array that represents the game board, used for logic. TODO: Implement
     var interval;
+    var x;
+    var y;
     
-    var LWSS = [[0,1,1], [1,2,1], [2,0,1], [2,1,1], [2,2,1]]
-    var MWSS = [[0,3,1], [1,1,1], [1,5,1], [2,0,1], [3,0,1], [3,5,1], [4,0,1], [4,1,1], [4,2,1], [4,3,1], [4,4,1]]
-    var HWSS = [[0,3,1], [0,4,1], [1,1,1], [1,6,1], [2,0,1], [3,0,1], [3,6,1], [4,0,1], [4,1,1], [4,2,1], [4,3,1], [4,4,1], [4,5,1],]
+    var GLIDER = {
+        width: 3,
+        height: 3,
+        design: [
+            [0, 1, 0],
+            [0, 0, 1],
+            [1, 1, 1]
+        ]
+    };
 
+    var LWSS = {
+        width: 5,
+        height: 4,
+        design: [
+            [0, 1, 0, 0, 1],
+            [1, 0, 0, 0, 0],
+            [1, 0, 0, 0, 1],
+            [1, 1, 1, 1, 0]
+        ]
+    };
+
+    var MWSS = {
+        width: 6,
+        height: 5,
+        design: [
+            [0, 0, 0, 1, 0, 0],
+            [0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0],
+            [1, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 0]
+        ]
+    };
+
+    var HWSS = {
+        width: 7,
+        height: 5,
+        design: [
+            [0, 0, 0, 1, 1, 0, 0],
+            [0, 1, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0],
+            [1, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 1, 0]
+        ]
+    };
 
     /*
      * This is the game init function. It adds an integer value to the id attribute of all the given elements.
@@ -82,15 +124,18 @@
         // If empty cell is clicked it gets the 'active' class, if a full cell is clicked the 'active' class is removed
         // ...
         let cellNumber = this.id;
-        let x = cellNumber % boardWidth;
-        let y = Math.floor(cellNumber / boardWidth);
+        x = cellNumber % boardWidth;
+        y = Math.floor(cellNumber / boardWidth);
         if (!this.classList.contains("active")) {
             this.classList.add("active");
             gameBoard[y][x] = 1;
         } else {
             this.classList.remove("active");
             gameBoard[y][x] = 0;
-        }
+        } 
+        
+        handleSpaceShips();
+        
     }
 
     function startGame() {
@@ -156,6 +201,7 @@
 
     function gameBoardCreation(callback) {
     // ...
+        document.getElementById("table").innerHTML= "";
         boardHeight = parseInt(document.getElementById("boardHeight").value);
         boardWidth = parseInt(document.getElementById("boardWidth").value);   
         handleIntervalTimer();
@@ -171,6 +217,7 @@
         let button = document.getElementById("Start");
         button.addEventListener("click", function () {
             startGame();
+            setGameIndicator(true);
             //button.disabled = true;
         });
     }
@@ -180,7 +227,7 @@
         let button = document.getElementById("Stop");
         button.addEventListener("click", function () {
             clearInterval(interval);
-            //button.disabled = true;
+            setGameIndicator(false);
         });
     }
 
@@ -190,6 +237,7 @@
         button.addEventListener("click", function () {
             setUpGrid();
             tick();
+            setGameIndicator(false);
         });
     }
 
@@ -208,49 +256,71 @@
 
     function handleSpaceShips () {
         let dropdown = document.getElementById("dropDown2");
-        dropdown.addEventListener("change", function(){
-            if (dropdown.options[dropdown.selectedIndex].text === "LWSS") {
-                createLWSS();
+            if (dropdown.options[dropdown.selectedIndex].text === "Glider") {
+                createForm(x, y, GLIDER, true);
+                removeClickedCell();
+            } else if (dropdown.options[dropdown.selectedIndex].text === "LWSS") {
+                createForm(x, y, LWSS, true);
+                removeClickedCell();
             } else if (dropdown.options[dropdown.selectedIndex].text === "MWSS") {
-                createMWSS();
+                createForm(x, y, MWSS, true);
+                removeClickedCell();
             } else if (dropdown.options[dropdown.selectedIndex].text === "HWSS") {
-                createHWSS();
+                createForm(x, y, HWSS, true);
+                removeClickedCell();
             }
-        }, false);
     }
-    
-     
-    function createLWSS() {
-        for (let i = 0; i < LWSS.length; i++) {
-            let x = LWSS[i][1];
-            let y = LWSS[i][0];
-            let cell = document.getElementById(x+y*boardWidth);
-            cell.classList.add("active");
-            gameBoard[x][y] = 1;
-        }
-    }
-    
-    function createMWSS() {
-        for (let i = 0; i < MWSS.length; i++) {
-            let x = MWSS[i][1];
-            let y = MWSS[i][0];
-            let cell = document.getElementById(x+y*boardWidth);
-            cell.classList.add("active");
-            gameBoard[x][y] = 1;
-        }
+   
+    function createForm(x, y, shape, condition) {
+        if(condition) {
+        for (let i = 0; i < shape.height; i++) {
+            for (let j = 0; j < shape.width; j++) {
+                let cell = document.getElementById((j+x)+(i+y)*boardWidth);
+                    if (shape.design[i][j] == 1) {
+                        if (!cell.classList.contains("active")) {
+                            cell.classList.add("active");
+                            gameBoard[i+y][j+x]=1;
+                        }   
+                    }
+                }
+            } 
+        }   
     }
 
-    function createHWSS() {
-        for (let i = 0; i < HWSS.length; i++) {
-            let x = HWSS[i][1];
-            let y = HWSS[i][0];
-            let cell = document.getElementById(x+y*boardWidth);
-            cell.classList.add("active");
-            gameBoard[x][y] = 1;
+    function defaultGameBoardCreation(boardHeight,boardWidth) {
+        // ... 
+            handleIntervalTimer();
+            generateTable();
+            cells = document.querySelectorAll(".cell");
+            setupGameBoard(cells);
+            setUpGrid();
+        }
+
+    function setGameIndicator(status) {
+        if (status) {
+            let ledlight = document.getElementById("led");
+            ledlight.classList.remove("led-red");
+            ledlight.classList.add("led-green");
+        } else {
+            let ledlight = document.getElementById("led");
+            ledlight.classList.remove("led-green");
+            ledlight.classList.add("led-red");
+        }
+    } 
+
+    function removeClickedCell() {
+        if (gameBoard[y][x] == 1) {
+            let cell = document.getElementById((x)+(y)*boardWidth);
+            cell.classList.remove("active")
+            gameBoard[y][x] = 0;
         }
     }
+    
+    
 
     /////////////////////////////////////
+
+    defaultGameBoardCreation();
 
     onGameStart();
 
@@ -258,7 +328,6 @@
 
     onGameStop();
 
-    handleSpaceShips();
-
+  
 })();
 
